@@ -6,3 +6,6 @@ my_venv/
 
 # Ignore IDE-specific files
 .vscode/
+
+migrations/
+instance/
