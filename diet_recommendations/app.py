@@ -15,7 +15,7 @@ migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login_register.html')
 
 @app.route('/add_user', methods = ['POST'])
 def add_user():
