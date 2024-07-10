@@ -82,7 +82,7 @@ daily_caloric_needs = calculate_daily_caloric_need(bmr, user_input['activity_lev
 # Adjust for weight loss plan
 adjusted_caloric_needs = adjust_for_weight_loss(daily_caloric_needs, user_input['weight_loss_plan'])
 
-print(f"Daily Caloric Needs: {adjusted_caloric_needs}")
+# print(f"Daily Caloric Needs: {adjusted_caloric_needs}")
 
 max_daily_ingredients = {
     'max_daily_fat': 100,
@@ -159,4 +159,11 @@ def generate_recommendations(caloric_need, options, food_df):
     print(recommendations[0])
     print([recipe for recipe in recommendations[0]['Name']])
 
-generate_recommendations(adjusted_caloric_needs, options=options, food_df=food_df)
+
+
+def from_slider(metrics, food_df = food_df):
+    foods = ml_model(food_df,nutrients_metrics=metrics)
+    return foods
+
+
+# generate_recommendations(adjusted_caloric_needs, options=options, food_df=food_df)

@@ -5,6 +5,7 @@ from models import User, db
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 import bcrypt
+from food_logic import from_slider
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -72,6 +73,33 @@ def user_login():
 @app.route('/food-images')
 def get_food():
     return get_images_links("virgin pina colada")
+
+
+@app.route('/get_custom_values')
+def get_values():
+    return render_template('slider.html')
+
+@app.route('/get_recommendations', methods = ['POST'])
+def get_recommendations():
+    data = request.get_json()
+    print('Data from the slider are: -------------> ')
+    calories = int(data['calories'])
+    fat = int(data['fat'])
+    saturatedFats = int(data['saturatedFats'])
+    protein = int(data['protein'])
+    fiber = int(data['fiber'])
+    cholesterol = int(data['cholesterol'])
+    sugar = int(data['sugar'])
+    carbs = int(data['carbohydrate'])
+    sodium = int(data['sodium'])
+
+    metrics = [calories, fat, saturatedFats, cholesterol, sodium, carbs, fiber, sugar, protein]
+    
+    recommendations = from_slider(metrics= metrics)
+
+    print(recommendations['Name'], recommendations['Calories'])
+
+    return {"message": 'Success'}
 
 
 # def hash_password(password):
