@@ -28,8 +28,22 @@
 import pandas as pd
 from ml_pipeline import ml_model
 
-dataframe = pd.read_csv('../data/dataset_filterd.csv', compression='gzip', header=0)
-food_df = dataframe.copy()
+
+def read_food_data():
+    dataframe = pd.read_csv('../data/dataset_filterd.csv', compression='gzip', header=0)
+    food_df = dataframe.copy()
+    return food_df
+
+# Example user inputs
+# user_input = {
+#     'age': 30,
+#     'weight': 70,  # in kg
+#     'height': 175,  # in cm
+#     'gender': 'male',
+#     'activity_level': 'Super active',
+#     'weight_loss_plan': 'Maintain weight'
+# }
+
 
 def calculate_bmr(weight, height, age, gender):
     if gender == 'male':
@@ -62,25 +76,6 @@ def adjust_for_weight_loss(daily_caloric_need, weight_loss_plan):
 
     return daily_caloric_need + adjustment[weight_loss_plan]
 
-# Example user inputs
-user_input = {
-    'age': 30,
-    'weight': 70,  # in kg
-    'height': 175,  # in cm
-    'gender': 'male',
-    'activity_level': 'Super active',
-    'weight_loss_plan': 'Maintain weight'
-}
-
-# calculate bmr
-bmr = calculate_bmr(user_input['weight'], user_input['height'], user_input['age'], user_input['gender'])
-
-
-# Calculate daily caloric needs based on activity level
-daily_caloric_needs = calculate_daily_caloric_need(bmr, user_input['activity_level'])
-
-# Adjust for weight loss plan
-adjusted_caloric_needs = adjust_for_weight_loss(daily_caloric_needs, user_input['weight_loss_plan'])
 
 # print(f"Daily Caloric Needs: {adjusted_caloric_needs}")
 
@@ -124,7 +119,9 @@ def meal_calories_percentage(number_of_meals):
     return percentage_calories
 
 
-def generate_recommendations(caloric_need, options, food_df):
+def generate_recommendations(caloric_need, options):
+
+    print('inside the generate_recommendations functions.....')
     
     recommendations = []
 
@@ -132,6 +129,8 @@ def generate_recommendations(caloric_need, options, food_df):
     print(calories_breakdown)
     
     values = []
+    food_df = read_food_data()
+
     for _, v in options.items():
         values.append(round(v))
     
@@ -156,14 +155,37 @@ def generate_recommendations(caloric_need, options, food_df):
         # recommended_recipes=generator.generate().json()['output']
         recommendations.append(generator)
     
-    print(recommendations[0])
-    print([recipe for recipe in recommendations[0]['Name']])
+    # print(recommendations[0])
+    # print([recipe for recipe in recommendations[0]['Name']])
+    return recommendations
 
 
+def generate_recommendations_on_user_form(user_input, options = options):
 
-def from_slider(metrics, food_df = food_df):
+    print('inside the generate_recommendations_on_user_form function.....')
+    # calculate bmr
+    bmr = calculate_bmr(user_input['weight'], user_input['height'], user_input['age'], user_input['gender'])
+    print('the Bmr of this person is: ', bmr)
+    # Calculate daily caloric needs based on activity level
+    daily_caloric_needs = calculate_daily_caloric_need(bmr, user_input['activity_level'])
+
+    print('daily caloric need for this person is: ', daily_caloric_needs)
+
+
+    # Adjust for weight loss plan
+    caloric_need = adjust_for_weight_loss(daily_caloric_needs, user_input['weight_loss_plan'])
+
+    print('adjusted caloric need according to the weight loss plan is: ', caloric_need)
+
+    output_from_model = generate_recommendations(caloric_need, options)
+
+    return output_from_model
+
+
+def from_slider(metrics):
+    print('inside the from_slider function...........')
+    food_df = read_food_data()
     foods = ml_model(food_df,nutrients_metrics=metrics)
     return foods
-
 
 # generate_recommendations(adjusted_caloric_needs, options=options, food_df=food_df)

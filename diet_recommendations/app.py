@@ -5,7 +5,7 @@ from models import User, db
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 import bcrypt
-from food_logic import from_slider
+from food_logic import from_slider, generate_recommendations_on_user_form
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -78,6 +78,56 @@ def get_food():
 @app.route('/get_custom_values')
 def get_values():
     return render_template('slider.html')
+
+@app.route('/user_info')
+def user_info_form():
+    return render_template('user_info.html')
+
+
+@app.route('/get_recommendations_form', methods = ['POST'])
+def get_recommendations_form():
+    data = request.form
+    # print(data)
+    print('age and height.................')
+    age = int(data['age'])
+    height = int(data['height'])
+    weight = int(data['weight'])
+    gender = data['gender']
+    activity_level = data['activity_level']
+    weight_loss_plan = data['weight_loss_plan']
+    # info = [age, height, weight, gender, activity_level, weight_loss_plan]
+    
+    # user_input = {
+#     'age': 30,
+#     'weight': 70,  # in kg
+#     'height': 175,  # in cm
+#     'gender': 'male',
+#     'activity_level': 'Super active',
+#     'weight_loss_plan': 'Maintain weight'
+# }
+    print('inside the get_recommendations_form function: ')
+
+    recommendations = generate_recommendations_on_user_form(user_input= {
+        'age': age,
+        'weight': weight,
+        'height': height,
+        'gender': gender,
+        'activity_level': activity_level,
+        'weight_loss_plan': weight_loss_plan
+    })
+
+    print(type(recommendations))
+    print('**********************')
+    breakfast = recommendations[0]
+    lunch = recommendations[1]
+    dinner = recommendations[2]
+    # result = recommendations.to_dict(orient = 'records')
+    print(breakfast)
+
+    return 'Foods predicted..'
+
+
+
 
 @app.route('/get_recommendations', methods = ['POST'])
 def get_recommendations():
