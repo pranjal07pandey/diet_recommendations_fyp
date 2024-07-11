@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Sliders</title>
+    <style>
+        .box {
+            width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .slider-container {
+            width: 700px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .value {
+            font-size: 20px;
+            margin-top: 5px;
+            /* margin-right: 600px; */
+        }
+        .label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            margin-right: 600px;
+        }
+        input[type=range] {
+            width: 100%; /* Make the slider take the full width of the container */
+        }
+        .submit-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .submit-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .submit-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+
+        <h2>Custom Food Recommender</h2>
+
+        <div class="slider-container">
+            <div class="label">Calories</div>
+            <input type="range" id="calories" min="0" max="2000" value="500" step="10">
+            <div class="value" id="caloriesValue">250</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="label">Fat (g)</div>
+            <input type="range" id="fat" min="0" max="50" value="25" step="1">
+            <div class="value" id="fatValue">25</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="label">Saturated Fats (g)</div>
+            <input type="range" id="saturatedFats" min="0" max="20" value="10" step="1">
+            <div class="value" id="saturatedFatsValue">10</div>
+        </div>
+
+        <div class="slider-container">
+            <div class="label">Carbohydrate (g)</div>
+            <input type="range" id="carbohydrate" min="0" max="325" value="150" step="10">
+            <div class="value" id="carbohydrateValue">150</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="label">Protein (g)</div>
+            <input type="range" id="protein" min="0" max="200" value="50" step="10">
+            <div class="value" id="proteinValue">50</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="label">Fiber (g)</div>
+            <input type="range" id="fiber" min="0" max="40" value="15" step="1">
+            <div class="value" id="fiberValue">15</div>
+        </div>
+
+        <div class="slider-container">
+            <div class="label">Sugar (g)</div>
+            <input type="range" id="sugar" min="0" max="40" value="15" step="1">
+            <div class="value" id="sugarValue">15</div>
+        </div>
+
+        <div class="slider-container">
+            <div class="label">Sodium (mg)</div>
+            <input type="range" id="sodium" min="0" max="2300" value="1500" step="50">
+            <div class="value" id="sodiumValue">1500</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="label">Cholesterol (mg)</div>
+            <input type="range" id="cholesterol" min="0" max="300" value="150" step="10">
+            <div class="value" id="cholesterolValue">150</div>
+        </div>
+        
+        <div class="submit-container">
+            <button id="submitBtn">Generate</button>
+        </div>
+
+    </div>
+
+
+
+<script>
+    const sliders = [
+        { id: 'calories', valueId: 'caloriesValue' },
+        { id: 'fat', valueId: 'fatValue' },
+        { id: 'saturatedFats', valueId: 'saturatedFatsValue' },
+        { id: 'protein', valueId: 'proteinValue' },
+        { id: 'fiber', valueId: 'fiberValue' },
+        { id: 'cholesterol', valueId: 'cholesterolValue' },
+
+        { id: 'carbohydrate', valueId: 'carbohydrateValue' },
+        { id: 'sugar', valueId: 'sugarValue' },
+        { id: 'sodium', valueId: 'sodiumValue' },
+
+    ];
+
+    sliders.forEach(slider => {
+        const input = document.getElementById(slider.id);
+        const valueDisplay = document.getElementById(slider.valueId);
+
+        input.oninput = function() {
+            valueDisplay.textContent = this.value;
+        }
+    });
+
+    document.getElementById('submitBtn').onclick = function() {
+        const values = {};
+        sliders.forEach(slider => {
+            values[slider.id] = document.getElementById(slider.id).value;
+        });
+
+        console.log('slider values: ', values);
+
+        fetch('/get_recommendations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Update the UI or notify the user based on the response
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>
