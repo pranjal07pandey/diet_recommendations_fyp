@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Meals</title>
+</head>
+<body>
+    <div>
+        {% for item in meals %}
+            {% for food in item %}
+                {{food.Name}}
+                {{food.Calories}}
+                {{food.CookTime}}
+                {{food.RecipeInstructions}}
+            {%endfor%}
+        {%endfor%}
+    </div>
+    <h1>Recommended Meals</h1>
+    <ul>
+        <p>Breakfast</p>
+        {% for meal in meals[0] %}
+            <li>{{ meal.Name }}</li>
+            <l1>{{meal.Calories}}</l1>
+            <l1>{{meal.CookTime}}</l1>
+            <l1>{{meal.RecipeInstructions}}</l1>
+
+        {% endfor %}
+    </ul>
+    <ul>
+        <p>Lunch</p>
+        {% for meal in meals[1] %}
+            <li>{{ meal.Name }}</li>
+            <l1>{{meal.Calories}}</l1>
+            <l1>{{meal.CookTime}}</l1>
+            <l1>{{meal.RecipeInstructions}}</l1>
+
+        {% endfor %}
+    </ul>
+    <ul>
+        <p>Dinner</p>
+        {% for meal in meals[2] %}
+            <li>{{ meal.Name }}</li>
+            <l1>{{meal.Calories}}</l1>
+            <l1>{{meal.CookTime}}</l1>
+            <l1>{{meal.RecipeInstructions}}</l1>
+
+        {% endfor %}
+    </ul>
+    <a href="/user_info">Back</a>
+    
+</body>
+</html>
