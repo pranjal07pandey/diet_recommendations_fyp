@@ -118,13 +118,21 @@ def get_recommendations_form():
 
     print(type(recommendations))
     print('**********************')
-    breakfast = recommendations[0]
-    lunch = recommendations[1]
-    dinner = recommendations[2]
-    # result = recommendations.to_dict(orient = 'records')
-    print(breakfast)
+    breakfast = recommendations[0].to_dict(orient = 'records')
+    lunch = recommendations[1].to_dict(orient = 'records')
+    dinner = recommendations[2].to_dict(orient = 'records')
+    
 
-    return 'Foods predicted..'
+
+    print(breakfast[0]['Name'], lunch[0]['Name'], dinner[0]['Name'], sep='; ')
+    # breakfast_items = []
+
+    # for items in breakfast['Name']:
+    #     breakfast_items.append(items)
+    
+    # print(breakfast_items)
+
+    return render_template('output.html', meals = [breakfast, lunch, dinner])
 
 
 
