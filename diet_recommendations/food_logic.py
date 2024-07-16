@@ -79,34 +79,34 @@ def adjust_for_weight_loss(daily_caloric_need, weight_loss_plan):
 
 # print(f"Daily Caloric Needs: {adjusted_caloric_needs}")
 
-max_daily_ingredients = {
-    'max_daily_fat': 100,
-    'max_daily_Saturatedfat': 13,
-    'max_daily_Cholesterol': 300,
-    'max_daily_Sodium': 2300,
-    'max_daily_Carbohydrate': 325,
-    'max_daily_Fiber': 40,
-    'max_daily_Sugar': 40,
-    'max_daily_Protein': 200
-}
+def custom_calories(selected_options):
 
-LOW_FACTOR = 0.4
-HIGH_FACTOR = 0.8
+    max_daily_ingredients = {
+        'max_daily_fat': 100,
+        'max_daily_Saturatedfat': 13,
+        'max_daily_Cholesterol': 300,
+        'max_daily_Sodium': 2300,
+        'max_daily_Carbohydrate': 325,
+        'max_daily_Fiber': 40,
+        'max_daily_Sugar': 40,
+        'max_daily_Protein': 200
+    }
 
-options = {
-    'low_fats': max_daily_ingredients['max_daily_fat'] * LOW_FACTOR,
-    'low_saturates': max_daily_ingredients['max_daily_Saturatedfat'] * LOW_FACTOR,
-    'low_cholestrol': max_daily_ingredients['max_daily_Cholesterol'] * LOW_FACTOR,
-    'low_sodium': max_daily_ingredients['max_daily_Sodium'] * LOW_FACTOR,
-    'low_carbs': max_daily_ingredients['max_daily_Carbohydrate'] * LOW_FACTOR,
-    'high_fiber': max_daily_ingredients['max_daily_Fiber'] * HIGH_FACTOR,
-    'low_sugar': max_daily_ingredients['max_daily_Sugar'] * LOW_FACTOR,
-    'high_protein': max_daily_ingredients['max_daily_Protein'] * HIGH_FACTOR,
-}
+    LOW_FACTOR = 0.5
+    HIGH_FACTOR = 1.0
 
-print('low carbs....')
+    options = {
+        'low_fats': max_daily_ingredients['max_daily_fat'] * LOW_FACTOR if 'low_fats' in selected_options else 100,
+        'low_saturates': max_daily_ingredients['max_daily_Saturatedfat'] * LOW_FACTOR if 'low_saturates' in selected_options else 13,
+        'low_cholesterol': max_daily_ingredients['max_daily_Cholesterol'] * LOW_FACTOR if 'low_cholesterol' in selected_options else 300,
+        'low_sodium': max_daily_ingredients['max_daily_Sodium'] * LOW_FACTOR if 'low_sodium' in selected_options else 2300,
+        'low_carbs': max_daily_ingredients['max_daily_Carbohydrate'] * LOW_FACTOR if 'low_carbs' in selected_options else 325,
+        'high_fiber': max_daily_ingredients['max_daily_Fiber'] * HIGH_FACTOR if 'high_fiber' in selected_options else 30,
+        'low_sugar': max_daily_ingredients['max_daily_Sugar'] * LOW_FACTOR if 'low_sugar' in selected_options else 40,
+        'high_protein': max_daily_ingredients['max_daily_Protein'] * HIGH_FACTOR if 'high_protein' in selected_options else 150,
+    }
 
-print(options['high_protein'])
+    return options
 
 def meal_calories_percentage(number_of_meals):
     if number_of_meals == 3:
@@ -134,6 +134,8 @@ def generate_recommendations(caloric_need, options):
     for _, v in options.items():
         values.append(round(v))
     
+    print(values)
+    
     for meal in calories_breakdown:
         meal_calories = caloric_need * calories_breakdown[meal]
         meal_values = [round(x* calories_breakdown[meal]) for x in values]
@@ -159,8 +161,10 @@ def generate_recommendations(caloric_need, options):
     # print([recipe for recipe in recommendations[0]['Name']])
     return recommendations
 
+# generate_recommendations(caloric_need = 1000, options = options)
 
-def generate_recommendations_on_user_form(user_input, options = options):
+
+def generate_recommendations_on_user_form(user_input, selected_options):
 
     print('inside the generate_recommendations_on_user_form function.....')
     # calculate bmr
@@ -176,6 +180,8 @@ def generate_recommendations_on_user_form(user_input, options = options):
     caloric_need = adjust_for_weight_loss(daily_caloric_needs, user_input['weight_loss_plan'])
 
     print('adjusted caloric need according to the weight loss plan is: ', caloric_need)
+
+    options = custom_calories(selected_options)
 
     output_from_model = generate_recommendations(caloric_need, options)
 
