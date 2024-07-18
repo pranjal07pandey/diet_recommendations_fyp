@@ -143,10 +143,17 @@ def get_recommendations_form():
     lunch = recommendations[1].to_dict(orient = 'records')
     dinner = recommendations[2].to_dict(orient = 'records')
     
+    ingredients_breakfast = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in breakfast]
+    ingredients_lunch = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in lunch]
+    ingredients_dinner = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in dinner]
 
 
-    print(breakfast[0]['Name'], lunch[0]['Name'], dinner[0]['Name'], sep='; ')
+    for i in range(len(breakfast)):
+        breakfast[i]['RecipeIngredientParts'] = ingredients_breakfast[i]
+        lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
+        dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
     # breakfast_items = []
+    print(breakfast)
 
     # for items in breakfast['Name']:
     #     breakfast_items.append(items)
@@ -175,10 +182,14 @@ def get_recommendations():
     metrics = [calories, fat, saturatedFats, cholesterol, sodium, carbs, fiber, sugar, protein]
     
     recommendations = from_slider(metrics= metrics)
+    recommendations = recommendations.to_dict(orient = 'records')
 
-    print(recommendations['Name'], recommendations['Calories'])
+    print(recommendations)
+    print(type(recommendations))
+    print(len(recommendations))
 
-    return {"message": 'Success'}
+
+    return jsonify(recommendations)
 
 
 # def hash_password(password):

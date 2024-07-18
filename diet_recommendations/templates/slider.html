@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nutritional value Sliders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <style>
         .box {
             width: 900px;
@@ -38,27 +40,22 @@
         input[type=range] {
             width: 100%; /* Make the slider take the full width of the container */
         }
-        .submit-container {
-            text-align: center;
-            margin-top: 20px;
+
+        .center-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
         }
-        .submit-container button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
+
+        .spinner-border {
+            display: none;
         }
-        .submit-container button:hover {
-            background-color: #0056b3;
-        }
+
     </style>
 </head>
 <body>
 
-    <div class="box">
+<div class="box">
 
         <h2>Custom Food Recommender</h2>
 
@@ -116,11 +113,15 @@
             <div class="value" id="cholesterolValue">150</div>
         </div>
         
-        <div class="submit-container">
-            <button id="submitBtn">Generate</button>
+        <div class="center-button-container">
+            <button id="generateButton" class="btn btn-primary">
+                Generate Recommendations
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
         </div>
+</div>
 
-    </div>
+    <div id="recommendations" class="row row-cols-1 row-cols-md-5 g-4"></div>
 
 
 
@@ -148,8 +149,16 @@
         }
     });
 
-    document.getElementById('submitBtn').onclick = function() {
+    document.getElementById('generateButton').onclick = function() {
         const values = {};
+        const recommendationsDiv = document.getElementById('recommendations');
+        recommendationsDiv.innerHTML = ''; // Clear any existing recommendations
+
+        const button = document.getElementById('generateButton');
+        const spinner = button.querySelector('.spinner-border');
+        spinner.style.display = 'inline-block';
+        button.disabled = true;
+
         sliders.forEach(slider => {
             values[slider.id] = document.getElementById(slider.id).value;
         });
@@ -166,13 +175,74 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Update the UI or notify the user based on the response
+            // Update the UI with the recommendations
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = ''; // Clear any existing recommendations
+            data.forEach(food => {
+                const foodItem = document.createElement('div');
+                foodItem.classList.add('food-item');
+                // foodItem.classList.add('col'); // Bootstrap column class
+                foodItem.innerHTML = `
+        
+            <div class="col">
+                <div class="card text-md-light h-100">
+                  <img src="..." class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <h5 class="card-title">${food.Name}</h5>
+                    
+                    <div class="card-header">
+                        Nutritional values
+                      </div>
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Calories: ${food.Calories}</li>
+                        <li class="list-group-item">SaturatedFats: ${food.SaturatedFatContent}</li>
+                        <li class="list-group-item">Fats: ${food.FatContent}</li>
+                        <li class="list-group-item">Carbohydrates: ${food.CarbohydrateContent}</li>
+                        <li class="list-group-item">Cholesterol: ${food.CholesterolContent}</li>
+                        <li class="list-group-item">Sodium: ${food.SodiumContent}</li>
+                        <li class="list-group-item">Fiber: ${food.FiberContent}</li>
+                        <li class="list-group-item">Sugar: ${food.SugarContent}</li>
+                        <li class="list-group-item">Protein: ${food.ProteinContent}</li>
+                      </ul>
+                    
+                      <p class="card-text">
+                        Cooking and Prep time:
+                        <ul>
+                            <li>${food.TotalTime}</li>
+                            <li>${food.CookTime}</li>
+                            <li>${food.PrepTime}</li>
+                        </ul>
+                      </p>
+                      
+                        <p class="card-text">
+                            Recipe Ingredients:
+                            <ul>
+                                <li>Hello</li>
+                            </ul>
+                          </p>
+                       
+                    <p class="card-text"><small class="text-body-secondary"></small></p>
+                  </div>
+                </div>
+              </div>       
+                `;
+
+                recommendationsDiv.appendChild(foodItem);
+            });
+
+            spinner.style.display = 'none';
+            button.disabled = false;
         })
         .catch((error) => {
             console.error('Error:', error);
+            spinner.style.display = 'none';
+            button.disabled = false;
         });
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 
 </body>
 </html>

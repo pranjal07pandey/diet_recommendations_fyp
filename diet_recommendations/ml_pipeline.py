@@ -67,6 +67,6 @@ def ml_model(food_df, nutrients_metrics):
         transformed_sample = pipeline.transform(sample_data)
         nearest_neighbor_indices = transformed_sample[0]
         nearest_neighbor_data = extracted_data.iloc[nearest_neighbor_indices]
-        return nearest_neighbor_data[['Name', 'Calories', 'CookTime', 'RecipeInstructions']]
+        return nearest_neighbor_data[relevant_cols]
     except Exception as e:
         return f"Error during transformation: {e}"
