@@ -25,7 +25,7 @@
             {% for meal in meals[0] %}
             <div class="col">
                 <div class="card text-md-light h-100">
-                  <img src="..." class="card-img-top" alt="...">
+                  <img src="{{meal.Images[0]}}" class="card-img-top" alt="...">
                   <div class="card-body">
                     <h5 class="card-title">{{ meal.Name }}</h5>
                     
@@ -61,8 +61,17 @@
                                 {% endfor %}
                             </ul>
                           </p>
+
+                          <p class="card-text"><small class="text-body-secondary">
+                            Instructions
+                            <ul>
+                              {% for instrs in meal.RecipeInstructions %}  
+                                  <li>{{instrs}}</li> 
+                              {% endfor %} 
+                          </ul>
+                            </small>
+                          </p>
                        
-                    <p class="card-text"><small class="text-body-secondary">{{meal.RecipeInstructions}}</small></p>
                   </div>
                 </div>
               </div>    
@@ -85,7 +94,7 @@
             {% for meal in meals[1] %}
             <div class="col">
                 <div class="card text-md-light h-100">
-                  <img src="..." class="card-img-top" alt="...">
+                  <img src="{{meal.Images[0]}}" class="card-img-top" alt="...">
                   <div class="card-body">
                     <h5 class="card-title">{{ meal.Name }}</h5>
                     
@@ -121,8 +130,17 @@
                                 {% endfor %}
                             </ul>
                           </p>
+
+                          <p class="card-text"><small class="text-body-secondary">
+                            Instructions
+                            <ul>
+                              {% for instrs in meal.RecipeInstructions %}  
+                                  <li>{{instrs}}</li> 
+                              {% endfor %} 
+                          </ul>
+                            </small>
+                          </p>
                        
-                    <p class="card-text"><small class="text-body-secondary">{{meal.RecipeInstructions}}</small></p>
                   </div>
                 </div>
               </div>    
@@ -146,7 +164,7 @@
                 {% for meal in meals[2] %}
                 <div class="col">
                     <div class="card text-md-light h-100">
-                      <img src="..." class="card-img-top" alt="...">
+                      <img src="{{meal.Images[0]}}" class="card-img-top" alt="Not found..">
                       <div class="card-body">
                         <h5 class="card-title">{{ meal.Name }}</h5>
                         
@@ -177,13 +195,19 @@
                             <p class="card-text">
                                 Recipe Ingredients:
                                 <ul>
-                                    {% for ings in meal.RecipeIngredientParts %} 
-                                        <li>{{ings}}</li>
-                                    {% endfor %}
+                                    {% for ings in meal.RecipeIngredientParts %}  
+                                        <li>{{ings}}</li> 
+                                     {% endfor %}
                                 </ul>
                               </p>
-                           
-                        <p class="card-text"><small class="text-body-secondary">{{meal.RecipeInstructions}}</small></p>
+                        <p class="card-text"><small class="text-body-secondary">
+                          Instructions
+                          <ul>
+                            {% for instrs in meal.RecipeInstructions %}  
+                                <li>{{instrs}}</li> 
+                            {% endfor %} 
+                        </ul>
+                          </small></p>
                       </div>
                     </div>
                   </div>    

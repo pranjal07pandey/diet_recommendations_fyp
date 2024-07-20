@@ -30,7 +30,7 @@ from ml_pipeline import ml_model
 
 
 def read_food_data():
-    dataframe = pd.read_csv('../data/dataset_filterd.csv', compression='gzip', header=0)
+    dataframe = pd.read_csv('../data/dataset_filtered.csv', compression='gzip', header=0)
     food_df = dataframe.copy()
     return food_df
 

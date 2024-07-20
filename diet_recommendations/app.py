@@ -137,28 +137,45 @@ def get_recommendations_form():
         'weight_loss_plan': weight_loss_plan
     }, selected_options= selected_options)
 
-    print(type(recommendations))
-    print('**********************')
+    # print(type(recommendations))
+    # print('**********************')
     breakfast = recommendations[0].to_dict(orient = 'records')
     lunch = recommendations[1].to_dict(orient = 'records')
     dinner = recommendations[2].to_dict(orient = 'records')
     
-    ingredients_breakfast = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in breakfast]
-    ingredients_lunch = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in lunch]
-    ingredients_dinner = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in dinner]
+    # ingredients_breakfast = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in breakfast]
+    # ingredients_lunch = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in lunch]
+    # ingredients_dinner = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in dinner]
+
+
+    # for i in range(len(breakfast)):
+    #     breakfast[i]['RecipeIngredientParts'] = ingredients_breakfast[i]
+    #     lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
+    #     dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
+    # breakfast_items = []
+    print('Breakfast0....................')
+    print(breakfast[0]['Images'])
+    print(type(breakfast[0]['Images']))
+
+    import ast
+    # Convert the string representation to a list
 
 
     for i in range(len(breakfast)):
-        breakfast[i]['RecipeIngredientParts'] = ingredients_breakfast[i]
-        lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
-        dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
-    # breakfast_items = []
-    print(breakfast)
+        breakfast[i]['Images'] = ast.literal_eval(breakfast[i]['Images'])
+        lunch[i]['Images'] = ast.literal_eval(lunch[i]['Images'])
+        dinner[i]['Images'] = ast.literal_eval(dinner[i]['Images'])
 
-    # for items in breakfast['Name']:
-    #     breakfast_items.append(items)
-    
-    # print(breakfast_items)
+
+    for i in range(len(breakfast)):
+        breakfast[i]['RecipeIngredientParts'] = ast.literal_eval(breakfast[i]['RecipeIngredientParts'])
+        lunch[i]['RecipeIngredientParts'] = ast.literal_eval(lunch[i]['RecipeIngredientParts'])
+        dinner[i]['RecipeIngredientParts'] = ast.literal_eval(dinner[i]['RecipeIngredientParts'])
+
+    for i in range(len(breakfast)):
+        breakfast[i]['RecipeInstructions'] = ast.literal_eval(breakfast[i]['RecipeInstructions'])
+        lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
+        dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
 
     return render_template('output.html', meals = [breakfast, lunch, dinner])
 

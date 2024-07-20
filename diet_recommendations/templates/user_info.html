@@ -90,17 +90,17 @@
         }
 
         .openbtn {
-        font-size: 20px;
-        cursor: pointer;
-        background-color: #111;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        margin: 10px;
-        position: absolute; /* Position it at the top left of the main content */
-        top: 10px; /* Align with the top of the main content */
-        left: 10px; /* Align with the left of the main content */
-}
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            position: absolute; /* Position it at the top left of the main content */
+            top: 10px; /* Align with the top of the main content */
+            left: 10px; /* Align with the left of the main content */
+        }
 
         .openbtn:hover {
             background-color: #444;
@@ -126,6 +126,42 @@
         }
 
 
+        .spinner-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            text-align: center;
+        }
+        .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -200,8 +236,16 @@
 
                 <input type="checkbox" name="low_cholesterol" value="low_cholesterol"> Low Cholesterol
 
-            <input type="submit" value="Submit" onclick="submitForm()">
+            <input type="submit" value="Generate" onclick="submitForm()">
+
+            
         </form>
+
+        <div class="spinner-container" id="spinner-container">
+            <div class="spinner"></div>
+            <div class="message">Generating your Personalized recommendations...</div>
+        </div>
+
     </div>
     <script>
                 /* scripts.js */
@@ -216,6 +260,9 @@
         }
 
         function submitForm() {
+
+            document.getElementById('spinner-container').style.display = 'block';
+
             const form = document.getElementById('checkboxForm');
             const checkboxes = form.querySelectorAll('input[type="checkbox"]');
             const formData = new FormData(form);
@@ -227,14 +274,16 @@
             });
 
             console.log(formData)
-
             // Use fetch API to submit the form data
             fetch('/get_recommendations_form', {
                 method: 'POST',
                 body: formData
-            }).then(response => response.text())
-              .then(text => alert(text))
-              .catch(error => console.error('Error:', error));
+            })
+            .then(response => {
+                return response.text()
+                document.getElementById('spinner-container').style.display = 'none';
+            })
+            .catch(error => console.error('Error:', error));
         }
 
 

@@ -11,7 +11,7 @@ print('Hello world')
 def ml_model(food_df, nutrients_metrics):
    
     # only selecting the relevant columns
-    relevant_cols = ['Name','CookTime','PrepTime','TotalTime','RecipeIngredientParts','Calories','FatContent','SaturatedFatContent','CholesterolContent','SodiumContent','CarbohydrateContent','FiberContent','SugarContent','ProteinContent','RecipeInstructions']
+    relevant_cols = ['Name','CookTime','PrepTime','TotalTime','RecipeIngredientParts','Calories','FatContent','SaturatedFatContent','CholesterolContent','SodiumContent','CarbohydrateContent','FiberContent','SugarContent','ProteinContent','RecipeInstructions', 'Images']
     food_df = food_df[relevant_cols]
 
     # print(food_df)
