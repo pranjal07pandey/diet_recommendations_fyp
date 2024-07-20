@@ -54,17 +54,141 @@
         input[type="submit"]:hover {
             background-color: #4cae4c;
         }
+
+        .sidebar {
+            height: 100%;
+            width: 250px; /* Set to open state width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 20px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            position: absolute; /* Position it at the top left of the main content */
+            top: 10px; /* Align with the top of the main content */
+            left: 10px; /* Align with the left of the main content */
+        }
+
+        .openbtn:hover {
+            background-color: #444;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        .checkbox-options {
+            padding: 20px;
+            color: black;
+        }
+
+        .checkbox-options label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-options input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+
+        .spinner-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            text-align: center;
+        }
+        .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+        }
+
+        
     </style>
 </head>
 <body>
+
+    <div id="main">
+        <button class="openbtn" onclick="openNav()">☰</button>
+    </div>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <a href="/user_info">Diet Recommendation</a>
+        <a href="/get_custom_values">Custom Food Recommendation</a>
+        
+    </div>
+
+    
+
     <div class="container">
+
         <h2>Health and Fitness Form</h2>
-        <form action="/get_recommendations_form" method="post">
+        <form id = "checkboxForm" action="/get_recommendations_form" method="post">
             <label for="age">Age:</label>
             <input type="number" id="age" name="age" required>
 
             <label for="gender">Gender:</label>
             <select id="gender" name="gender" required>
+                <option value="male">--Choose--</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
             </select>
@@ -77,6 +201,7 @@
 
             <label for="activity_level">Activity Level:</label>
             <select id="activity_level" name="activity_level" required>
+                <option value="Sedentary">--Choose Options--</option>
                 <option value="Sedentary">Sedentary</option>
                 <option value="Lightly active">Lightly active</option>
                 <option value="Moderately active">Moderately active</option>
@@ -86,14 +211,82 @@
 
             <label for="weight_loss_plan">Weight Loss Plan:</label>
             <select id="weight_loss_plan" name="weight_loss_plan" required>
+                <option value="Maintain weight">--Choose Options--</option>
                 <option value="Maintain weight">Maintain weight</option>
                 <option value="Mild weight loss">Mild weight loss</option>
                 <option value="Moderate weight loss">Moderate weight loss</option>
                 <option value="Extreme weight loss">Extreme weight loss</option>
             </select>
 
-            <input type="submit" value="Submit">
+                <label for="personalization option">Personalization Options:</label>
+
+                <input type="checkbox" name="low_carbs" value="low_carbs"> Low Carbs
+                
+                <input type="checkbox" name="high_protein" value="high_protein"> High Protein
+
+                <input type="checkbox" name="low_saturates" value="low_saturates"> Low Saturates
+
+                <input type="checkbox" name="low_fats" value="low_fats"> Low Fats
+
+                <input type="checkbox" name="low_sodium" value="low_sodium"> Low Sodium
+
+                <input type="checkbox" name="high_fiber" value="high_fiber"> High Fiber
+
+                <input type="checkbox" name="low_sugar" value="low_sugar"> Low Sugar
+
+                <input type="checkbox" name="low_cholesterol" value="low_cholesterol"> Low Cholesterol
+
+            <input type="submit" value="Generate" onclick="submitForm()">
+
+            
         </form>
+
+        <div class="spinner-container" id="spinner-container">
+            <div class="spinner"></div>
+            <div class="message">Generating your Personalized recommendations...</div>
+        </div>
+
     </div>
+    <script>
+                /* scripts.js */
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft= "0";
+        }
+
+        function submitForm() {
+
+            document.getElementById('spinner-container').style.display = 'block';
+
+            const form = document.getElementById('checkboxForm');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            const formData = new FormData(form);
+
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    formData.append(checkbox.name, 'not_selected');
+                }
+            });
+
+            console.log(formData)
+            // Use fetch API to submit the form data
+            fetch('/get_recommendations_form', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                return response.text()
+                document.getElementById('spinner-container').style.display = 'none';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+    </script>
 </body>
 </html>

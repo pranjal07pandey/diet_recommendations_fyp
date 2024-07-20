@@ -95,6 +95,27 @@ def get_recommendations_form():
     gender = data['gender']
     activity_level = data['activity_level']
     weight_loss_plan = data['weight_loss_plan']
+
+    selected_options = []
+    
+    low_carbs = data.get('low_carbs', 'not_selected')
+    low_saturates = data.get('low_saturates', 'not_selected')
+    low_cholesterol = data.get('low_cholesterol', 'not_selected')
+    low_sodium = data.get('low_sodium', 'not_selected')
+    low_fats = data.get('low_fats', 'not_selected')
+    high_fiber = data.get('high_fiber', 'not_selected')
+    low_sugar = data.get('low_sugar', 'not_selected')
+    high_protein = data.get('high_protein', 'not_selected')
+    
+
+
+    checkbox_lists = [low_fats, low_saturates, low_cholesterol, low_sodium, low_carbs, high_fiber, high_protein, low_sugar]
+
+    for items in checkbox_lists:
+        if items != 'not_selected':
+            selected_options.append(items)
+    
+    print(selected_options)
     # info = [age, height, weight, gender, activity_level, weight_loss_plan]
     
     # user_input = {
@@ -114,23 +135,47 @@ def get_recommendations_form():
         'gender': gender,
         'activity_level': activity_level,
         'weight_loss_plan': weight_loss_plan
-    })
+    }, selected_options= selected_options)
 
-    print(type(recommendations))
-    print('**********************')
+    # print(type(recommendations))
+    # print('**********************')
     breakfast = recommendations[0].to_dict(orient = 'records')
     lunch = recommendations[1].to_dict(orient = 'records')
     dinner = recommendations[2].to_dict(orient = 'records')
     
+    # ingredients_breakfast = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in breakfast]
+    # ingredients_lunch = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in lunch]
+    # ingredients_dinner = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in dinner]
 
 
-    print(breakfast[0]['Name'], lunch[0]['Name'], dinner[0]['Name'], sep='; ')
+    # for i in range(len(breakfast)):
+    #     breakfast[i]['RecipeIngredientParts'] = ingredients_breakfast[i]
+    #     lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
+    #     dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
     # breakfast_items = []
+    print('Breakfast0....................')
+    print(breakfast[0]['Images'])
+    print(type(breakfast[0]['Images']))
 
-    # for items in breakfast['Name']:
-    #     breakfast_items.append(items)
-    
-    # print(breakfast_items)
+    import ast
+    # Convert the string representation to a list
+
+
+    for i in range(len(breakfast)):
+        breakfast[i]['Images'] = ast.literal_eval(breakfast[i]['Images'])
+        lunch[i]['Images'] = ast.literal_eval(lunch[i]['Images'])
+        dinner[i]['Images'] = ast.literal_eval(dinner[i]['Images'])
+
+
+    for i in range(len(breakfast)):
+        breakfast[i]['RecipeIngredientParts'] = ast.literal_eval(breakfast[i]['RecipeIngredientParts'])
+        lunch[i]['RecipeIngredientParts'] = ast.literal_eval(lunch[i]['RecipeIngredientParts'])
+        dinner[i]['RecipeIngredientParts'] = ast.literal_eval(dinner[i]['RecipeIngredientParts'])
+
+    for i in range(len(breakfast)):
+        breakfast[i]['RecipeInstructions'] = ast.literal_eval(breakfast[i]['RecipeInstructions'])
+        lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
+        dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
 
     return render_template('output.html', meals = [breakfast, lunch, dinner])
 
@@ -154,10 +199,14 @@ def get_recommendations():
     metrics = [calories, fat, saturatedFats, cholesterol, sodium, carbs, fiber, sugar, protein]
     
     recommendations = from_slider(metrics= metrics)
+    recommendations = recommendations.to_dict(orient = 'records')
 
-    print(recommendations['Name'], recommendations['Calories'])
+    print(recommendations)
+    print(type(recommendations))
+    print(len(recommendations))
 
-    return {"message": 'Success'}
+
+    return jsonify(recommendations)
 
 
 # def hash_password(password):
