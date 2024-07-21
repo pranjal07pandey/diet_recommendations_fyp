@@ -7,6 +7,10 @@ from sqlalchemy.exc import IntegrityError
 import bcrypt
 from food_logic import from_slider, generate_recommendations_on_user_form
 
+# Convert the string representation to a list
+import ast 
+
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -55,7 +59,7 @@ def get_user():
 
 @app.route('/login', methods = ['POST'])
 def user_login():
-    data = request.get_json()
+    data = request.form
     username = data['username']
     password = data['password']
 
@@ -64,7 +68,8 @@ def user_login():
     
     user = User.query.filter_by(username = username).first()
     if user and bcrypt.checkpw(password.encode('utf-8'), user.password):
-        return jsonify({'message': 'Login Successful..'}), 200
+        print('username and password matched....')
+        return render_template('user_info.html')
     else:
         return jsonify({'message': 'username or password incorrect..'}), 401
 
@@ -107,8 +112,6 @@ def get_recommendations_form():
     low_sugar = data.get('low_sugar', 'not_selected')
     high_protein = data.get('high_protein', 'not_selected')
     
-
-
     checkbox_lists = [low_fats, low_saturates, low_cholesterol, low_sodium, low_carbs, high_fiber, high_protein, low_sugar]
 
     for items in checkbox_lists:
@@ -116,17 +119,61 @@ def get_recommendations_form():
             selected_options.append(items)
     
     print(selected_options)
-    # info = [age, height, weight, gender, activity_level, weight_loss_plan]
     
-    # user_input = {
-#     'age': 30,
-#     'weight': 70,  # in kg
-#     'height': 175,  # in cm
-#     'gender': 'male',
-#     'activity_level': 'Super active',
-#     'weight_loss_plan': 'Maintain weight'
-# }
     print('inside the get_recommendations_form function: ')
+
+    # calculate BMI
+    height_in_m = height / 100
+    bmi = round(weight / height_in_m **2, 2)
+    print('The BMI is: ',  bmi)
+
+    if bmi<18.5:
+        category='Underweight'
+        color='red'
+    elif 18.5<=bmi<25:
+        category='Normal'
+        color='green'
+    elif 25<=bmi<30:
+        category='Overweight'
+        color='yellow'
+    else:
+        category='Obesity'    
+        color='red'
+    
+    bmi_result = [{'bmi': bmi,'category': category, 'color': color} ]
+
+    print('Bmi result: ', bmi_result)
+
+    # Now For BMR
+    if gender == 'male':
+        bmr = 10 * weight + 6.25*height - 5*age + 5
+    else:
+        bmr = 10 * weight + 6.35*height - 5*age - 161
+    
+    activity_multipliers = {
+        'Sedentary': 1.2,
+        'Lightly active': 1.375,
+        'Moderately active': 1.55,
+        'Very active': 1.725,
+        'Super active': 1.9
+    }
+
+    daily_caloric_need = bmr * activity_multipliers[activity_level]
+    
+    adjustment = {
+        'Maintain weight': 0,
+        'Mild weight loss': -200,
+        'Moderate weight loss': -400,
+        'Extreme weight loss': -800
+    }
+
+    adjust_according_to_plan = daily_caloric_need + adjustment[weight_loss_plan]
+
+    print('Your Daily Caloric need is: ', daily_caloric_need)
+
+    print('Your Daily Caloric need according to your plan is: ', adjust_according_to_plan)
+
+    caloric_info = [{'daily_caloric_need': round(daily_caloric_need,0), 'bmr': round(bmr,0), 'adjust_according_to_plan': round(adjust_according_to_plan,0), 'weight_loss_plan': weight_loss_plan}]
 
     recommendations = generate_recommendations_on_user_form(user_input= {
         'age': age,
@@ -157,10 +204,6 @@ def get_recommendations_form():
     print(breakfast[0]['Images'])
     print(type(breakfast[0]['Images']))
 
-    import ast
-    # Convert the string representation to a list
-
-
     for i in range(len(breakfast)):
         breakfast[i]['Images'] = ast.literal_eval(breakfast[i]['Images'])
         lunch[i]['Images'] = ast.literal_eval(lunch[i]['Images'])
@@ -177,8 +220,7 @@ def get_recommendations_form():
         lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
         dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
 
-    return render_template('output.html', meals = [breakfast, lunch, dinner])
-
+    return render_template('output.html', meals = [breakfast, lunch, dinner, bmi_result, caloric_info])
 
 
 
@@ -198,28 +240,22 @@ def get_recommendations():
 
     metrics = [calories, fat, saturatedFats, cholesterol, sodium, carbs, fiber, sugar, protein]
     
+    print('values from slider...>')
+    print(metrics)
+
     recommendations = from_slider(metrics= metrics)
     recommendations = recommendations.to_dict(orient = 'records')
 
-    print(recommendations)
-    print(type(recommendations))
-    print(len(recommendations))
+    for i in range(len(recommendations)):
+        recommendations[i]['RecipeIngredientParts'] = ast.literal_eval(recommendations[i]['RecipeIngredientParts'])
+        recommendations[i]['Images'] = ast.literal_eval(recommendations[i]['Images'])
+        recommendations[i]['RecipeInstructions'] = ast.literal_eval(recommendations[i]['RecipeInstructions'])
 
+    print('recommendations...>')
+    print(recommendations)
 
     return jsonify(recommendations)
 
-
-# def hash_password(password):
-#     """Hash a password using bcrypt."""
-#     # Generate a salt and hash the password
-#     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-#     return hashed_password
-
-# def check_password(hashed_password, password):
-#     """Check if a provided password matches the hashed password."""
-#     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
-
- 
 
 if __name__ == '__main__':
     with app.app_context():

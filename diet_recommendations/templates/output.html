@@ -12,7 +12,31 @@
 
     <div class="container">
 
-    <h1>Recommended Meals</h1>
+    <h2>BMI Calculator</h2>
+    {% for items in meals[3] %}
+        <h4>Your BMI is: {{items.bmi}} kg/m²</h4>
+        <p>Your BMI is in the 
+          {{items.category}}
+           weight Category</p>
+    {% endfor %}
+    <p> 
+      Note:<b> Healthy BMI range: 18.5 kg/m² - 25 kg/m².</b>
+    </p>
+
+    <hr>
+
+    <h2>Calories Calculator</h2>
+    {% for items in meals[4] %}
+        <h4>Your BMR is: {{items.bmr}}</h4>
+        <p>Your Daily Caloric need is: {{items.daily_caloric_need}} kcal</p>
+        <p>Your Selected Weight loss plan is: {{items.weight_loss_plan}}</p>
+        <p>Note: <b> Your Daily Caloric need according to your weight loss plan is: {{items.adjust_according_to_plan}} Kcal</b></p>
+    {% endfor %}
+    
+    <hr>
+
+      
+    <h2>Recommended Meals</h2>
     <p class="d-inline-flex gap-1">
         <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
           Breakfast Recommendations

@@ -186,7 +186,7 @@
         
             <div class="col">
                 <div class="card text-md-light h-100">
-                  <img src="..." class="card-img-top" alt="...">
+                  <img src="${food.Images[0]}" class="card-img-top" alt="...">
                   <div class="card-body">
                     <h5 class="card-title">${food.Name}</h5>
                     
@@ -206,7 +206,7 @@
                       </ul>
                     
                       <p class="card-text">
-                        Cooking and Prep time:
+                        <b>Cooking and Prep time:</b>
                         <ul>
                             <li>${food.TotalTime}</li>
                             <li>${food.CookTime}</li>
@@ -215,13 +215,19 @@
                       </p>
                       
                         <p class="card-text">
-                            Recipe Ingredients:
+                            <b>Recipe Ingredients:</b>
                             <ul>
-                                <li>Hello</li>
+                                ${food.RecipeIngredientParts.length > 0 ? food.RecipeIngredientParts.map(element => `<li>${element}</li>`).join('')
+                                : `<li>Nothing to display</li>` }
                             </ul>
                           </p>
                        
-                    <p class="card-text"><small class="text-body-secondary"></small></p>
+                    <p class="card-text">
+                        <b>Instructions:</b>
+                        <ul>
+                            ${food.RecipeInstructions.length > 0 ? food.RecipeInstructions.map(element => `<li>${element}</li>`).join('')
+                                : `<li>Nothing to display</li>` }
+                        </ul>
                   </div>
                 </div>
               </div>       

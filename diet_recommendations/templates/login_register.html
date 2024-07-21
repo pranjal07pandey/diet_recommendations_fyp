@@ -54,7 +54,7 @@ input {
     border-radius: 5px;
 }
 
-button {
+.button {
     padding: 15px;
     border-radius: 10px;
     margin-top: 15px;
@@ -78,13 +78,13 @@ button {
     <div class="main">
         <h1>Diet Recommender</h1>
         <h3>Enter credentials</h3>
-        <form action="">
+        <form action="/login" method="POST">
               <label for="first">
                     Username:
               </label>
               <input type="text" 
                      id="first" 
-                     name="first" 
+                     name="username" 
                      placeholder="Enter your Username" required>
 
               <label for="password">
@@ -96,10 +96,8 @@ button {
                      placeholder="Enter your Password" required>
 
               <div class="wrap">
-                    <button type="submit"
-                            onclick="solve()">
-                          Login
-                    </button>
+                    <input type="submit" value="Submit" class="button">
+                    
               </div>
         </form>
         <p>Not registered?
