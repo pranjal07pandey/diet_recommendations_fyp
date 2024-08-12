@@ -52,7 +52,7 @@ def ml_model(food_df, nutrients_metrics):
 
     from sklearn.neighbors import NearestNeighbors
     # Nearest Neighbors model
-    nn_model = NearestNeighbors(metric='cosine', algorithm='brute')
+    nn_model = NearestNeighbors(metric='manhattan', algorithm='brute')
     nn_model.fit(scaled_data)
 
     # FunctionTransformer and Pipeline

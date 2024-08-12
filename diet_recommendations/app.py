@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 import bcrypt
 from food_logic import from_slider, generate_recommendations_on_user_form
+from get_food_images import get_images_links
 
 # Convert the string representation to a list
 import ast 
@@ -200,25 +201,49 @@ def get_recommendations_form():
     #     lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
     #     dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
     # breakfast_items = []
-    print('Breakfast0....................')
-    print(breakfast[0]['Images'])
-    print(type(breakfast[0]['Images']))
+    
 
     for i in range(len(breakfast)):
         breakfast[i]['Images'] = ast.literal_eval(breakfast[i]['Images'])
         lunch[i]['Images'] = ast.literal_eval(lunch[i]['Images'])
         dinner[i]['Images'] = ast.literal_eval(dinner[i]['Images'])
 
-
-    for i in range(len(breakfast)):
         breakfast[i]['RecipeIngredientParts'] = ast.literal_eval(breakfast[i]['RecipeIngredientParts'])
         lunch[i]['RecipeIngredientParts'] = ast.literal_eval(lunch[i]['RecipeIngredientParts'])
         dinner[i]['RecipeIngredientParts'] = ast.literal_eval(dinner[i]['RecipeIngredientParts'])
 
-    for i in range(len(breakfast)):
         breakfast[i]['RecipeInstructions'] = ast.literal_eval(breakfast[i]['RecipeInstructions'])
         lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
         dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
+
+    # for i in range(len(breakfast)):
+    #     breakfast[i]['RecipeIngredientParts'] = ast.literal_eval(breakfast[i]['RecipeIngredientParts'])
+    #     lunch[i]['RecipeIngredientParts'] = ast.literal_eval(lunch[i]['RecipeIngredientParts'])
+    #     dinner[i]['RecipeIngredientParts'] = ast.literal_eval(dinner[i]['RecipeIngredientParts'])
+
+    # for i in range(len(breakfast)):
+    #     breakfast[i]['RecipeInstructions'] = ast.literal_eval(breakfast[i]['RecipeInstructions'])
+    #     lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
+    #     dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
+
+    for meals in breakfast:
+        
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
+            
+    
+    for meals in lunch:
+        
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
+            
+    
+    for meals in dinner:
+        
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
+            
+
 
     return render_template('output.html', meals = [breakfast, lunch, dinner, bmi_result, caloric_info])
 
@@ -252,7 +277,13 @@ def get_recommendations():
         recommendations[i]['RecipeInstructions'] = ast.literal_eval(recommendations[i]['RecipeInstructions'])
 
     print('recommendations...>')
-    print(recommendations)
+    
+    for recommendation in recommendations:
+        if recommendation['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            print(f'{recommendation['Name']} not found..')
+            recommendation['Images'][0] = get_images_links(recommendation['Name'])
+
+        print(type(recommendation['Images']))
 
     return jsonify(recommendations)
 
