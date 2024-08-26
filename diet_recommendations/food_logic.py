@@ -110,7 +110,7 @@ def custom_calories(selected_options):
 
 def meal_calories_percentage(number_of_meals):
     if number_of_meals == 3:
-        percentage_calories = {'breakfast': 0.4, 'lunch': 0.35, 'dinner': 0.25}
+        percentage_calories = {'breakfast': 0.5, 'lunch': 0.3, 'dinner': 0.2}
     elif number_of_meals == 4:
         percentage_calories = {'breakfast':0.40,'morning snack':0.05,'lunch':0.30,'dinner':0.25}
     elif number_of_meals == 5:

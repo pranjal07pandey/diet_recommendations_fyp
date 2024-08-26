@@ -6,10 +6,14 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
+
+
 print('Hello world')
 
 def ml_model(food_df, nutrients_metrics):
-   
+
+    # Suppress all UserWarnings
+    # warnings.filterwarnings("ignore", category=UserWarning)
     # only selecting the relevant columns
     relevant_cols = ['Name','CookTime','PrepTime','TotalTime','RecipeIngredientParts','Calories','FatContent','SaturatedFatContent','CholesterolContent','SodiumContent','CarbohydrateContent','FiberContent','SugarContent','ProteinContent','RecipeInstructions', 'Images']
     food_df = food_df[relevant_cols]
@@ -50,7 +54,6 @@ def ml_model(food_df, nutrients_metrics):
 
     print(scaled_data.shape)
 
-    from sklearn.neighbors import NearestNeighbors
     # Nearest Neighbors model
     nn_model = NearestNeighbors(metric='manhattan', algorithm='brute')
     nn_model.fit(scaled_data)
@@ -70,3 +73,48 @@ def ml_model(food_df, nutrients_metrics):
         return nearest_neighbor_data[relevant_cols]
     except Exception as e:
         return f"Error during transformation: {e}"
+    
+    # Trying out Faiss algorithm
+    # Now let's create a matrix for FAISS
+    # numerical_features = ['Calories','FatContent','SaturatedFatContent','CholesterolContent','SodiumContent','CarbohydrateContent','FiberContent','SugarContent','ProteinContent']
+
+    # dataset_filtered = extracted_data.copy()
+    # scaler = StandardScaler()
+    # data_to_transform = extracted_data.iloc[:, 5:14].to_numpy()
+    # dataset_filtered[numerical_features] = scaler.fit_transform(data_to_transform)
+
+    # import faiss
+    # features_matrix = dataset_filtered[numerical_features].values.astype('float32')
+
+    # # Step 1: Create the FAISS index
+    # d = features_matrix.shape[1]  # dimension of features
+    # nlist = 100  # Number of clusters (for IVF)
+    # quantizer = faiss.IndexFlatL2(d)  # the quantizer
+    # index = faiss.IndexIVFFlat(quantizer, d, nlist, faiss.METRIC_L2)
+
+    # # Step 2: Train the index
+    # index.train(features_matrix)
+
+    # # Step 3: Add vectors to the index
+    # index.add(features_matrix)
+
+    # # Step 4: Make the index searchable
+    # index.nprobe = 10  # number of clusters to search in
+
+    # # Step 1: Define the user's input
+    # # user_input = [500, 20, 10, 150, 1200, 500, 20, 10, 40]  # Example input
+    # user_input_faiss = np.array(nutrients_metrics).reshape(1, -1).astype('float32')
+
+    # print(user_input_faiss)
+    # # Step 2: Scale the user's input using the same scaler
+    # scaler.fit(dataset_filtered[numerical_features])
+    # print("done fitting")
+    # # user_input_scaled_faiss = scaler.transform(user_input_faiss)
+    # print("done scaling")
+    # # Step 3: Search for the most similar foods using FAISS
+    # distances_faiss, indices_faiss = index.search(user_input_faiss, 5)  # Search for top 5 similar foods
+    
+    # print(distances_faiss, indices_faiss)
+    # original_dataset_recommendations_with_nutirents = extracted_data.iloc[indices_faiss[0]][relevant_cols]
+
+    # return original_dataset_recommendations_with_nutirents

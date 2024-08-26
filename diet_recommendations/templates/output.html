@@ -10,7 +10,7 @@
 </head>
 <body>
 
-    <div class="container">
+  <div class="container">
 
     <h2>BMI Calculator</h2>
     {% for items in meals[3] %}
@@ -28,9 +28,9 @@
     <h2>Calories Calculator</h2>
     {% for items in meals[4] %}
         <h4>Your BMR is: {{items.bmr}}</h4>
-        <p>Your Daily Caloric need is: {{items.daily_caloric_need}} kcal</p>
-        <p>Your Selected Weight loss plan is: {{items.weight_loss_plan}}</p>
-        <p>Note: <b> Your Daily Caloric need according to your weight loss plan is: {{items.adjust_according_to_plan}} Kcal</b></p>
+        <p id = "daily_caloric_need">Your Daily Caloric need is: {{items.daily_caloric_need}} kcal</p>
+        <p id = "weight_loss_plan">Your Selected Weight loss plan is: {{items.weight_loss_plan}}</p>
+        <p id = "adjust_according_to_plan">Note: <b> Your Daily Caloric need according to your weight loss plan is: {{items.adjust_according_to_plan}} Kcal</b></p>
     {% endfor %}
     
     <hr>
@@ -57,7 +57,7 @@
                         Nutritional values
                       </div>
                       <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Calories: {{meal.Calories}}</li>
+                        <li class="list-group-item" id = "breakfast_cal">Calories: {{meal.Calories}}</li>
                         <li class="list-group-item">SaturatedFats: {{meal.SaturatedFatContent}}</li>
                         <li class="list-group-item">Fats: {{meal.FatContent}}</li>
                         <li class="list-group-item">Carbohydrates: {{meal.CarbohydrateContent}}</li>
@@ -126,7 +126,7 @@
                         Nutritional values
                       </div>
                       <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Calories: {{meal.Calories}}</li>
+                        <li class="list-group-item" id = "lunch_cal">Calories: {{meal.Calories}}</li>
                         <li class="list-group-item">SaturatedFats: {{meal.SaturatedFatContent}}</li>
                         <li class="list-group-item">Fats: {{meal.FatContent}}</li>
                         <li class="list-group-item">Carbohydrates: {{meal.CarbohydrateContent}}</li>
@@ -196,7 +196,7 @@
                             Nutritional values
                           </div>
                           <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Calories: {{meal.Calories}}</li>
+                            <li class="list-group-item" id = "lunch_cal">Calories: {{meal.Calories}}</li>
                             <li class="list-group-item">SaturatedFats: {{meal.SaturatedFatContent}}</li>
                             <li class="list-group-item">Fats: {{meal.FatContent}}</li>
                             <li class="list-group-item">Carbohydrates: {{meal.CarbohydrateContent}}</li>
@@ -244,9 +244,139 @@
 
     <a href="/user_info">Back</a>
 
+    <hr>
+
+    <h2>Choose your meal composition: </h2>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col">
+
+          <h4>Select Breakfast: </h4>
+            <select class = "form-select" id="select_breakfast" name="select_breakfast">
+                {% for meal in meals[0] %}
+                <option value="{{meal.Calories}}">{{meal.Name}} - {{meal.Calories}} Kcal</option>
+                <!-- <option value="Mild weight loss">Mild weight loss (0.25 kg/week)</option>
+                <option value="Moderate weight loss">Moderate weight loss (0.5 kg/week)</option>
+                <option value="Extreme weight loss">Extreme weight loss (1 kg/week)</option> -->
+                {% endfor %}
+            </select>
+      
+        </div>
+        
+        <div class="col">
+
+          <h4>Select Lunch: </h4>
+            <select class = "form-select" id="select_lunch" name="select_breakfast">
+                {% for meal in meals[1] %}
+                <option value="{{meal.Calories}}">{{meal.Name}} - {{meal.Calories}} Kcal</option>
+                <!-- <option value="Mild weight loss">Mild weight loss (0.25 kg/week)</option>
+                <option value="Moderate weight loss">Moderate weight loss (0.5 kg/week)</option>
+                <option value="Extreme weight loss">Extreme weight loss (1 kg/week)</option> -->
+                {% endfor %}
+            </select>
+          
+        </div>
+
+        <div class="col">
+          
+          <h4>Select Dinner: </h4>
+            <select class = "form-select" id="select_dinner" name="select_breakfast">
+                {% for meal in meals[2] %}
+                <option value="{{meal.Calories}}">{{meal.Name}} - {{meal.Calories}} Kcal</option>
+                <!-- <option value="Mild weight loss">Mild weight loss (0.25 kg/week)</option>
+                <option value="Moderate weight loss">Moderate weight loss (0.5 kg/week)</option>
+                <option value="Extreme weight loss">Extreme weight loss (1 kg/week)</option> -->
+                {% endfor %}
+            </select>
+          
+      </div>
+
+    </div>
     </div>
 
+    <br>
+
+    <h3>Total calories in Recipe vs Your Daily required calories..</h3>
+    <br>
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      const ctx = document.getElementById('myChart');
+      var adjust_according_to_plan = document.getElementById('adjust_according_to_plan').innerText;
+      var weight_loss_plan = document.getElementById('weight_loss_plan').innerText;
+      var daily_caloric_need = document.getElementById('daily_caloric_need').innerText;
+
+
+        // Regular expressions to extract the dynamic values
+      const caloricNeedMatch = adjust_according_to_plan.match(/(\d+(\.\d+)?)/);  // Matches the number (e.g., 1860.0)
+      const weightLossPlanMatch = weight_loss_plan.match(/: (.*)$/);  // Matches the text after the colon
+      const dailyCaloricNeedMatch = daily_caloric_need.match(/(\d+(\.\d+)?)/); 
+
+
+      const value1 = document.getElementById('select_breakfast').value;
+      const value2 = document.getElementById('select_lunch').value;
+      const value3 = document.getElementById('select_dinner').value;
+
+      const selected_calories = parseFloat(value1) + parseFloat(value2) + parseFloat(value3)
+
+      const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Calories You Selected', 'Your Daily Caloric Need'],
+          datasets: [{
+            data: [selected_calories, parseFloat(dailyCaloricNeedMatch[0])],
+            borderWidth: 1,
+            backgroundColor: ['red', 'blue']
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+        legend: {
+          display: false // This hides the legend if there are no labels needed
+        }
+      }
+        }
+      });
+
+      // Step 2: Function to update the chart
+    function updateChart() {
+    // Capture new values from the select tags
+    const value1 = document.getElementById('select_breakfast').value;
+    const value2 = document.getElementById('select_lunch').value;
+    const value3 = document.getElementById('select_dinner').value;
+
+    const selected_calories = parseFloat(value1) + parseFloat(value2) + parseFloat(value3)
+
+    // Update the data in the chart
+    myChart.data.datasets[0].data[0] = selected_calories;
+    myChart.update();
+  }
+
+   // Step 3: Add event listeners to the select tags
+    document.getElementById('select_breakfast').addEventListener('change', updateChart);
+    document.getElementById('select_lunch').addEventListener('change', updateChart);
+    document.getElementById('select_dinner').addEventListener('change', updateChart);
+
+
+      function resize() {
+            myChart.resize(800, 500);
+        }
+        resize();
+
+    </script>
+
+
 </body>
 </html>
