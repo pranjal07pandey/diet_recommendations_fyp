@@ -18,10 +18,24 @@
         <p>Your BMI is in the 
           {{items.category}}
            weight Category</p>
+           {% if items.age_verification %}
+           <p style="color: red"> 
+            Alert:<b> The Information you provided shows that you are not an adult. The bmi calculations and the calories recommended could be irrelevant to you.</b>
+          </p>
+           {% endif  %}
+
+           {% if items.extreme_obese %}
+           <p style="color: red"> 
+            Alert:<b>Your BMI suggests that your obesity level is extremely high. We recommend you to take professional help for your health safety as these suggestions might not be fully relevant to you.</b>
+          </p>
+           {% endif  %}
+           
     {% endfor %}
     <p> 
       Note:<b> Healthy BMI range: 18.5 kg/m² - 25 kg/m².</b>
     </p>
+
+    
 
     <hr>
 
@@ -36,7 +50,7 @@
     <hr>
 
       
-    <h2>Recommended Meals</h2>
+    <h2>Recommended meals that closely matches your dietary requirements</h2>
     <p class="d-inline-flex gap-1">
         <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
           Breakfast Recommendations
@@ -242,8 +256,6 @@
 
     <br>
 
-    <a href="/user_info">Back</a>
-
     <hr>
 
     <h2>Choose your meal composition: </h2>
@@ -302,6 +314,11 @@
     <div>
       <canvas id="myChart"></canvas>
     </div>
+
+    <br>
+    <a href="/user_info" class="btn btn-outline-secondary">Go Back</a>
+    <br>
+    <br>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 

@@ -27,7 +27,7 @@
 '''
 import pandas as pd
 from ml_pipeline import ml_model
-
+from random import uniform as rnd
 
 def read_food_data():
     dataframe = pd.read_csv('../data/dataset_filtered.csv', compression='gzip', header=0)
@@ -139,18 +139,19 @@ def generate_recommendations(caloric_need, options):
     for meal in calories_breakdown:
         meal_calories = caloric_need * calories_breakdown[meal]
         meal_values = [round(x* calories_breakdown[meal]) for x in values]
-    
+
+        
         if meal == 'breakfast':
             recommend_metrics = [round(meal_calories)]
             recommend_metrics.extend(meal_values)
 
         elif meal == 'lunch':
-            recommend_metrics = [round(meal_calories)]
-            recommend_metrics.extend(meal_values)
+            recommend_metrics = [round(meal_calories), round(rnd(20,30)), round(rnd(1,4)), round(rnd(70,90)), round(rnd(400,690)), round(rnd(80,97)), round(rnd(7,12)), round(rnd(7,12)), round(rnd(40,60))]
+            # recommend_metrics.extend(meal_values)
         
         elif meal == 'dinner':
-            recommend_metrics = [round(meal_calories)]
-            recommend_metrics.extend(meal_values)
+            recommend_metrics = [round(meal_calories), round(rnd(10,20)), round(rnd(1,3)), round(rnd(40,60)), round(rnd(300,460)), round(rnd(50,65)), round(rnd(5,8)), round(rnd(5,8)), round(rnd(30,40))]
+            # recommend_metrics.extend(meal_values)
         
         
         generator=ml_model(food_df=food_df, nutrients_metrics=recommend_metrics)

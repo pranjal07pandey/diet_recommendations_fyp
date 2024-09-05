@@ -172,7 +172,8 @@
 
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a href="/user_info">Diet Recommendation</a>
+        <a href="/user_info">Welcome <b>{{username}}</b></a>
+        <hr>
         <a href="/get_custom_values">Custom Food Recommendation</a>
         
     </div>
@@ -236,7 +237,7 @@
 
                 <input type="checkbox" name="low_cholesterol" value="low_cholesterol"> Low Cholesterol
 
-            <input type="submit" value="Generate" onclick="submitForm()">
+            <input type="submit" value="Generate Recommendations" onclick="submitForm()">
 
             
         </form>

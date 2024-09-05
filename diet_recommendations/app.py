@@ -70,7 +70,7 @@ def user_login():
     user = User.query.filter_by(username = username).first()
     if user and bcrypt.checkpw(password.encode('utf-8'), user.password):
         print('username and password matched....')
-        return render_template('user_info.html')
+        return render_template('user_info.html', username = username)
     else:
         return jsonify({'message': 'username or password incorrect..'}), 401
 
@@ -140,8 +140,18 @@ def get_recommendations_form():
     else:
         category='Obesity'    
         color='red'
+
+    is_underaged = False
+    is_extremely_obese = False
+
+    if age < 18:
+        is_underaged = True
     
-    bmi_result = [{'bmi': bmi,'category': category, 'color': color} ]
+    if bmi > 40:
+        is_extremely_obese = True
+
+
+    bmi_result = [{'bmi': bmi,'category': category, 'color': color, 'age_verification': is_underaged, 'extreme_obese': is_extremely_obese} ]
 
     print('Bmi result: ', bmi_result)
 
@@ -191,16 +201,6 @@ def get_recommendations_form():
     lunch = recommendations[1].to_dict(orient = 'records')
     dinner = recommendations[2].to_dict(orient = 'records')
     
-    # ingredients_breakfast = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in breakfast]
-    # ingredients_lunch = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in lunch]
-    # ingredients_dinner = [items['RecipeIngredientParts'].strip('c()').replace('"', '').split(', ') for items in dinner]
-
-
-    # for i in range(len(breakfast)):
-    #     breakfast[i]['RecipeIngredientParts'] = ingredients_breakfast[i]
-    #     lunch[i]['RecipeIngredientParts'] = ingredients_lunch[i]
-    #     dinner[i]['RecipeIngredientParts'] = ingredients_dinner[i]
-    # breakfast_items = []
     
 
     for i in range(len(breakfast)):
@@ -216,32 +216,23 @@ def get_recommendations_form():
         lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
         dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
 
-    # for i in range(len(breakfast)):
-    #     breakfast[i]['RecipeIngredientParts'] = ast.literal_eval(breakfast[i]['RecipeIngredientParts'])
-    #     lunch[i]['RecipeIngredientParts'] = ast.literal_eval(lunch[i]['RecipeIngredientParts'])
-    #     dinner[i]['RecipeIngredientParts'] = ast.literal_eval(dinner[i]['RecipeIngredientParts'])
 
-    # for i in range(len(breakfast)):
-    #     breakfast[i]['RecipeInstructions'] = ast.literal_eval(breakfast[i]['RecipeInstructions'])
-    #     lunch[i]['RecipeInstructions'] = ast.literal_eval(lunch[i]['RecipeInstructions'])
-    #     dinner[i]['RecipeInstructions'] = ast.literal_eval(dinner[i]['RecipeInstructions'])
-
-    # for meals in breakfast:
+    for meals in breakfast:
         
-    #     if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
-    #         meals['Images'][0] = get_images_links(meals['Name'])
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
             
     
-    # for meals in lunch:
+    for meals in lunch:
         
-    #     if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
-    #         meals['Images'][0] = get_images_links(meals['Name'])
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
             
     
-    # for meals in dinner:
+    for meals in dinner:
         
-    #     if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
-    #         meals['Images'][0] = get_images_links(meals['Name'])
+        if meals['Images'][0] == 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg':
+            meals['Images'][0] = get_images_links(meals['Name'])
             
 
 

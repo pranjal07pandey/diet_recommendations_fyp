@@ -12,8 +12,6 @@ print('Hello world')
 
 def ml_model(food_df, nutrients_metrics):
 
-    # Suppress all UserWarnings
-    # warnings.filterwarnings("ignore", category=UserWarning)
     # only selecting the relevant columns
     relevant_cols = ['Name','CookTime','PrepTime','TotalTime','RecipeIngredientParts','Calories','FatContent','SaturatedFatContent','CholesterolContent','SodiumContent','CarbohydrateContent','FiberContent','SugarContent','ProteinContent','RecipeInstructions', 'Images']
     food_df = food_df[relevant_cols]
@@ -55,7 +53,7 @@ def ml_model(food_df, nutrients_metrics):
     print(scaled_data.shape)
 
     # Nearest Neighbors model
-    nn_model = NearestNeighbors(metric='manhattan', algorithm='brute')
+    nn_model = NearestNeighbors(metric='manhattan', algorithm='kd_tree')
     nn_model.fit(scaled_data)
 
     # FunctionTransformer and Pipeline
@@ -64,6 +62,7 @@ def ml_model(food_df, nutrients_metrics):
     pipeline = Pipeline([('std_scaler', scaler), ('NN', transformer)])
 
     sample_data = np.array([nutrients_metrics])
+    print('The sample data is: ', nutrients_metrics)
 
     try:
         # Testing the model
